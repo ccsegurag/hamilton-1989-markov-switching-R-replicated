@@ -1,12 +1,11 @@
-# =================== MAXSEEK.R (versión limpia) ===================
+# =================== MAXSEEK.R ===================
 
-# (opcional) fijar directorio de trabajo
+# Fijar directorio de trabajo
 setwd("C:/Users/Afsan/Desktop/Markov Switching Models - Hamilton")
 
-# Registrar salida como en GAUSS
-sink("junk")  # (acordate de sink(NULL) al final)
+# Registrar salida
+sink("junk") 
 
-## ========== EXAMPLE 1 - Paper seminal de Hamilton 1989 ==========
 capt <- 135L
 bbbb <- scan("GNP82.DAT", quiet = TRUE)
 stopifnot(length(bbbb) >= capt + 1L)
@@ -27,7 +26,7 @@ sig0 <- 1
 p11  <- 1.5; p22 <- 1.5
 th <- c(mu1, mu2, phi1, phi2, phi3, phi4, sig0, p11, p22)
 
-# ========= pattern1 (como en GAUSS) =========
+# ========= pattern1 =========
 pattern1 <- function(ns, ps) {
   n  <- ns^(ps + 1L)
   na <- n / ns
@@ -44,10 +43,10 @@ pattern1 <- function(ns, ps) {
 }
 hp <- pattern1(ns, ps)
 
-# ========= incluye PROCS (SOLO funciones) =========
+# ========= incluye PROCS  =========
 source("PROCSR.R")
 
-# ----------- bloque “startval … kc, ks …” (como GAUSS) -----------
+# ----------- bloque “startval … kc, ks …” -----------
 capt <- length(y)
 startval <- function() th
 nk  <- pphi + 1L
@@ -61,7 +60,7 @@ id <- diag(ns)
 cat("Bayesian prior used\n")
 cat("a=", a, " b=", b, " c=", c, "\n", sep = "")
 
-# ----------- objetivo (NLL) en escala de optimización -----------
+
 obj_fn <- function(par) {
   ofn(par, y, ns, ps, pphi, isig, ipm,
       a, b, c, kc = 1, ks = 1, izz = 1, hp)$nll
@@ -73,10 +72,10 @@ btol <- 1e-6; miter <- 150
 res <- optim(par = x0, fn = obj_fn, method = "BFGS",
              control = list(maxit = miter, reltol = btol))
 
-x_opt <- res$par          # parámetros en escala de optimización (izz=1)
+x_opt <- res$par          # Parámetros en escala de optimización (izz=1)
 f_nll <- res$value        # NLL en el óptimo
 
-# Gradiente numérico (en escala de optimización) para imprimir como GAUSS
+# Gradiente numérico
 if (!requireNamespace("numDeriv", quietly = TRUE)) {
   install.packages("numDeriv")
 }
@@ -87,7 +86,7 @@ cat("Coefficients:\n"); print(t(x_opt))
 cat("\nValue of log likelihood: ", -f_nll, "\n", sep = "")
 cat("\nGradient vector:\n"); print(t(g_opt))
 
-# ----------- Reparametrización para reporte (izz = 2) -----------
+# ----------- Reparametrización para reporte -----------
 izz <- 2L
 x_rep <- x_opt
 ncount <- ns + pphi
@@ -129,7 +128,7 @@ cat("filtered probabilities\n")
 kc <- 2L; ks <- 2L
 out <- ofn(x_rep, y, ns, ps, pphi, isig, ipm, a, b, c, kc, ks, izz = 2, hp)
 
-# Encabezado filtradas (ns-1 por bloque, como GAUSS)
+# Encabezado filtradas (ns-1 por bloque)
 hdr <- c("Obs")
 for (tlag in 0:ps) for (i in 1:(ns - 1)) hdr <- c(hdr, sprintf("P(st-%d=%d)", tlag, i))
 cat(paste(hdr, collapse = " "), "\n")
@@ -151,3 +150,4 @@ print(smoothed_print, row.names = FALSE)
 
 # Cerrar archivo de salida
 sink(NULL)
+
