@@ -1,4 +1,4 @@
-# =================== MAXSEEK.R ===================
+# =================== CENTRAL CODE.R ===================
 
 # Fijar directorio de trabajo
 setwd("C:/Users/Afsan/Desktop/Markov Switching Models - Hamilton")
@@ -44,7 +44,7 @@ pattern1 <- function(ns, ps) {
 hp <- pattern1(ns, ps)
 
 # ========= incluye PROCS  =========
-source("PROCSR.R")
+source("FUNCTIONS.R")
 
 # ----------- bloque “startval … kc, ks …” -----------
 capt <- length(y)
@@ -150,4 +150,5 @@ print(smoothed_print, row.names = FALSE)
 
 # Cerrar archivo de salida
 sink(NULL)
+
 
